@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Leaderboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>🥖 Beste Brood Leaderboard</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Foto</th>
+          <th>Naam</th>
+          <th>Prijs</th>
+          <th>Rating</th>
+          <th>Win rate</th>
+          <th>Match count</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in products %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td><img src="{{ url_for('static', filename=p.filename) }}" alt="{{ p.Naam }}" style="width: 50px"></td>
+          <td>{{ p.Naam }}</td>
+          <td>€{{ p.Prijs }}</td>
+          <td>{{ "%.0f"|format(p.rating) }}</td>
+          <td>
+            {% if p.matches > 0 %}
+              {{ "%.1f"|format((p.wins / p.matches) * 100) }}%
+            {% else %}-{% endif %}
+          </td>
+          <td>{{ p.matches }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      
+    </table>
+    <a href="/">⬅️ Terug naar stemmen</a>
+  </div>
+</body>
+</html>

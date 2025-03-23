@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Beste Brood</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Welke broodje kies jij?</h1>
+    <div class="product-pair">
+      <div class="product-card" id="card1" onclick="submitVote({{ product1.id }}, {{ product2.id }})">
+        <img src="{{ url_for('static', filename=product1.filename) }}" alt="{{ product1.Naam }}">
+        <div class="info">
+          <h2>{{ product1.Naam }}</h2>
+          <p>€{{ product1.Prijs }}</p>
+        </div>
+      </div>
+      <div class="product-card" id="card2" onclick="submitVote({{ product2.id }}, {{ product1.id }})">
+        <img src="{{ url_for('static', filename=product2.filename) }}" alt="{{ product2.Naam }}">
+        <div class="info">
+          <h2>{{ product2.Naam }}</h2>
+          <p>€{{ product2.Prijs }}</p>
+        </div>
+      </div>
+    </div>
+    <a href="/leaderboard">Bekijk de scores →</a>
+  </div>
+
+  <script>
+    function submitVote(winnerId, loserId) {
+      fetch("/vote", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `winner_id=${winnerId}&loser_id=${loserId}`
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Vote request failed");
+        return res.json();
+      })
+      .then(data => {
+        const p1 = data.product1;
+        const p2 = data.product2;
+
+        document.getElementById("card1").setAttribute("onclick", `submitVote(${p1.id}, ${p2.id})`);
+        document.getElementById("card1").innerHTML = `
+          <img src="/static/${p1.filename}" alt="${p1.Naam}">
+          <div class="info"><h2>${p1.Naam}</h2><p>€${p1.Prijs}</p></div>
+        `;
+
+        document.getElementById("card2").setAttribute("onclick", `submitVote(${p2.id}, ${p1.id})`);
+        document.getElementById("card2").innerHTML = `
+          <img src="/static/${p2.filename}" alt="${p2.Naam}">
+          <div class="info"><h2>${p2.Naam}</h2><p>€${p2.Prijs}</p></div>
+        `;
+      })
+      .catch(err => console.error("Error submitting vote:", err));
+    }
+  </script>
+</body>
+</html>
