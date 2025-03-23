@@ -82,6 +82,12 @@ def vote():
 
 @app.route('/leaderboard')
 def leaderboard():
+    # Reload data from CSV
+    if os.path.exists("results.csv"):
+        df = pd.read_csv("results.csv")
+        global products
+        products = df.to_dict(orient='records')
+    
     MIN_MATCHES = 3
     C = 5  # confidence weight
     M = 1500  # average rating baseline
