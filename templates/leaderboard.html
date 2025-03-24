@@ -9,7 +9,32 @@
 <body>
   <div class="container">
     <h1>🥖 Beste Brood Leaderboard</h1>
-    <table>
+    <div class="sort-controls">
+      <button onclick="sortProducts('asc')" class="sort-btn">Broodscore ↑</button>
+      <button onclick="sortProducts('desc')" class="sort-btn">Broodscore ↓</button>
+    </div>
+    <div class="mobile-leaderboard" id="mobile-leaderboard">
+      {% for p in products %}
+      <div class="product-card">
+        <div class="product-image">
+          <img src="{{ url_for('static', filename=p.filename) }}" alt="{{ p.Naam }}">
+        </div>
+        <div class="product-stats">
+          <h2><span class="rank">{{loop.index}}</span>. {{ p.Naam }}</h2>
+          <p class="price">Prijs: €{{ p.Prijs }}</p>
+          <p class="score">Broodscore: {{ "%.0f"|format(p.rating) }}</p>
+          <p class="winrate">
+            Winstpercentage: 
+            {% if p.matches > 0 %}
+              {{ "%.1f"|format((p.wins / p.matches) * 100) }}%
+            {% else %}-{% endif %}
+          </p>
+          <p class="matches">Keer gestemd: {{ p.matches }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <table class="desktop-leaderboard">
       <thead>
         <tr>
           <th>#</th>
@@ -42,5 +67,59 @@
     </table>
     <a href="/">⬅️ Terug naar stemmen</a>
   </div>
+
+  <script>
+    function sortProducts(direction) {
+      // mobile sorting
+      const mobileContainer = document.getElementById('mobile-leaderboard');
+      const mobileCards = Array.from(mobileContainer.getElementsByClassName('product-card'));
+      
+      // desktop sorting - selecting the elements that need to be sorted
+      const desktopContainer = document.querySelector('.desktop-leaderboard tbody');
+      const desktopRows = Array.from(desktopContainer.getElementsByTagName('tr'));
+      
+      // sorting function for both versions 
+      const sortByScore = (a, b) => {
+        let scoreA, scoreB;
+        
+        if (a.classList.contains('product-card')) {
+          // mobile view
+          scoreA = parseFloat(a.querySelector('.score').textContent.split(': ')[1]);
+          scoreB = parseFloat(b.querySelector('.score').textContent.split(': ')[1]);
+        } else {
+          // editing the desktop view
+          scoreA = parseFloat(a.children[4].textContent); // 5th col is the broodscore
+          scoreB = parseFloat(b.children[4].textContent);
+        }
+        
+        // return whether or not a is greater than b (ascending or descending respectively)
+        return direction === 'asc' ? scoreA - scoreB : scoreB - scoreA;
+      };
+      
+      // sort mobile cards
+      mobileCards.sort(sortByScore);
+      // clear the mobile cards
+      mobileContainer.innerHTML = '';
+      mobileCards.forEach((card, index) => {
+        // reverse the index (length - index) for ascending order - we want to see which are the lowest scores first
+        const rankNumber = direction === 'asc' ? mobileCards.length - index : index + 1;
+        card.querySelector('.rank').textContent = rankNumber;
+        // replace the card with the sorted card
+        mobileContainer.appendChild(card);
+      });
+      
+      // sort desktop rows
+      desktopRows.sort(sortByScore);
+      // clear the rows
+      desktopContainer.innerHTML = '';
+      desktopRows.forEach((row, index) => {
+        // reverse the index (length - index) for ascending order - we want to see which are the lowest scores first
+        const rankNumber = direction === 'asc' ? desktopRows.length - index : index + 1;
+        row.firstElementChild.textContent = rankNumber;
+        // replace the row with the sorted row
+        desktopContainer.appendChild(row);
+      });
+    }
+  </script>
 </body>
 </html>

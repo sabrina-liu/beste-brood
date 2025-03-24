@@ -17,6 +17,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    gap: 10px;
 }
 
 h1 {
@@ -46,12 +47,13 @@ h1 {
 }
 
 .product-card img {
-    width: 100%;
+    width: 90%;
     height: auto;
-    max-height: 40vh;
+    max-height: 36vh;
     object-fit: contain;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+    margin: 5% 5% 0 5%;
 }
 
 .info {
@@ -79,7 +81,7 @@ h1 {
     }
 
     .product-card img {
-        max-height: 35vh;
+        max-height: 31.5vh;
     }
 
     .container {
@@ -103,3 +105,69 @@ table th {
     background-color: #f2f2f2;
 }
   
+.mobile-leaderboard {
+    display: none;
+}
+
+.mobile-leaderboard .product-card {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.mobile-leaderboard .product-image {
+    width: 100px;
+    flex-shrink: 0;
+}
+
+.mobile-leaderboard .product-image img {
+    width: 100%;
+    height: 100px;
+    object-fit: contain;
+}
+
+.mobile-leaderboard .product-stats {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.mobile-leaderboard h2 {
+    margin: 0 0 5px 0;
+    font-size: 1rem;
+}
+
+.mobile-leaderboard p {
+    margin: 3px 0;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+    .desktop-leaderboard {
+        display: none;
+    }
+    
+    .mobile-leaderboard {
+        display: block;
+    }
+}
+
+.sort-controls {
+    margin-bottom: 15px;
+}
+
+.sort-btn {
+    background-color: white;
+    border: 1px solid #ddd;
+    padding: 8px 16px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.sort-btn:hover {
+    background-color: #f0f0f0;
+}
+
